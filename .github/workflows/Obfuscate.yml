@@ -28,9 +28,24 @@ jobs:
         run: |
           npm install -g javascript-obfuscator
 
-      - name: Clone BPB workjs
+      - name: Clone BPB Worker Panel repository
         run: |
-          wget -O origin.js https://raw.githubusercontent.com/bia-pain-bache/BPB-Worker-Panel/refs/heads/main/build/unobfuscated-worker.js
+          git clone https://github.com/bia-pain-bache/BPB-Worker-Panel.git
+          ls -la BPB-Worker-Panel/
+
+      - name: Install dependencies and build
+        run: |
+          cd BPB-Worker-Panel
+          npm install
+          npm run build
+          # 构建后，确认 dist/worker.js 是否生成
+          ls -la dist/
+
+      - name: Copy built worker.js as origin.js
+        run: |
+          cp BPB-Worker-Panel/dist/worker.js origin.js
+          # 可选：查看一下文件开头，确保内容正确
+          head -n 5 origin.js
       
       - name: Obfuscate BPB worker js
         run: |
